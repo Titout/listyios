@@ -28,7 +28,7 @@ struct ContentView: View {
 				.environment(\.tabSelection, $selectedTab)
 
 			// Vue des listes
-			ListView()
+			
 				.tabItem {
 					Label("Listes", systemImage: "list.bullet")
 				}

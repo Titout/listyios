@@ -219,4 +219,4 @@ struct SimpleListView: View {
         Text("Vue de listes")
             .font(.title)
     }
-} 
+}
