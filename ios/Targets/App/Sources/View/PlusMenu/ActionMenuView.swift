@@ -2,14 +2,6 @@ import SwiftUI
 import Combine
 import Foundation
 
-// Structure pour les ingrédients (local definition)
-struct IngredientItem: Identifiable {
-    let id = UUID()
-    let name: String
-    let quantity: String
-    let unit: String
-}
-
 // Vue du menu d'actions conforme à la maquette Figma
 struct ActionMenuView: View {
     @Environment(\.dismiss) private var dismiss
@@ -779,103 +771,189 @@ struct ActionMenuView: View {
         }
     }
     
-    // Fonction pour configurer les observateurs du clavier
+    // Configuration des notifications clavier
     private func setupKeyboardObservers() {
+        // Observateurs pour montée et descente du clavier
         NotificationCenter.default.addObserver(
             forName: UIResponder.keyboardWillShowNotification,
             object: nil,
             queue: .main
         ) { notification in
-            guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-                  activeView == .addItem else { return }
-            
-            let keyboardHeight = keyboardFrame.height
-            
-            // Récupérer la durée de l'animation du clavier
-            let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double ?? 0.25
-            
-            // Récupérer la courbe d'animation du clavier
-            let curve = UIView.AnimationCurve(rawValue: notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int ?? 7) ?? .easeInOut
-            
-            // Calcul amélioré pour l'offset, basé sur les specs Figma
-            // Assurons que le champ actif et le bouton "Ajouter" restent visibles
-            let offset: CGFloat
-            
-            switch focusedField {
-            case .name:
-                // Déplacement minimal pour le premier champ
-                offset = keyboardHeight * 0.3
-            case .price:
-                // Déplacement moyen pour le champ du milieu
-                offset = keyboardHeight * 0.5
-            case .quantity:
-                // Déplacement plus important pour le dernier champ
-                offset = keyboardHeight * 0.65
-            case nil:
-                // Valeur par défaut
-                offset = keyboardHeight * 0.4
+            guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
+                return
             }
             
-            // Ajustement supplémentaire pour les petits écrans (iPhone SE, etc.)
-            let finalOffset = screenHeight < 700 ? offset + 40 : offset
-            
-            // Animation synchro avec l'animation du clavier iOS
-            let animator = UIViewPropertyAnimator(duration: duration, curve: curve) {
-                self.keyboardOffset = finalOffset
-            }
-            animator.startAnimation()
+            // Ajuster l'offset en fonction de la hauteur du clavier
+            keyboardOffset = keyboardFrame.height
         }
         
         NotificationCenter.default.addObserver(
             forName: UIResponder.keyboardWillHideNotification,
             object: nil,
             queue: .main
-        ) { notification in
-            // Récupérer la durée de l'animation du clavier
-            let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double ?? 0.25
-            
-            // Récupérer la courbe d'animation du clavier
-            let curve = UIView.AnimationCurve(rawValue: notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int ?? 7) ?? .easeInOut
-            
-            // Animation synchro avec l'animation du clavier iOS
-            let animator = UIViewPropertyAnimator(duration: duration, curve: curve) {
-                self.keyboardOffset = 0
-            }
-            animator.startAnimation()
+        ) { _ in
+            // Réinitialiser l'offset quand le clavier disparaît
+            keyboardOffset = 0
         }
     }
     
-    // Fonction pour supprimer les observateurs du clavier
+    // Nettoyage des observateurs clavier
     private func removeKeyboardObservers() {
-        NotificationCenter.default.removeObserver(
-            self,
-            name: UIResponder.keyboardWillShowNotification,
-            object: nil
-        )
-        
-        NotificationCenter.default.removeObserver(
-            self,
-            name: UIResponder.keyboardWillHideNotification,
-            object: nil
-        )
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
-// Composant bouton d'action
+// Énumération pour les catégories de listes
+enum ListCategory: String, CaseIterable, Identifiable {
+    case courses = "Courses"
+    case recette = "Recette"
+    case fete = "Fête"
+    case noel = "Noël"
+    case anniversaire = "Anniversaire"
+    
+    var id: String { self.rawValue }
+    
+    var imageName: String {
+        switch self {
+        case .courses: return "cart"
+        case .recette: return "fork.knife"
+        case .fete: return "party.popper"
+        case .noel: return "gift"
+        case .anniversaire: return "birthday.cake"
+        }
+    }
+    
+    @ViewBuilder
+    func imageView(size: CGFloat) -> some View {
+        switch self {
+        case .courses:
+            Image(systemName: "cart")
+                .font(.system(size: size))
+        case .recette:
+            Image(systemName: "fork.knife")
+                .font(.system(size: size))
+        case .fete:
+            Image(systemName: "party.popper.fill")
+                .font(.system(size: size))
+        case .noel:
+            Image(systemName: "gift.fill")
+                .font(.system(size: size))
+        case .anniversaire:
+            Image(systemName: "birthday.cake.fill")
+                .font(.system(size: size))
+        }
+    }
+}
+
+// Vue pour le sélecteur de liste
+struct ListPickerView: View {
+    @Binding var selectedList: ListItem?
+    var onDismiss: () -> Void
+    
+    var body: some View {
+        NavigationStack {
+            List(sampleLists) { list in
+                Button(action: {
+                    selectedList = list
+                    onDismiss()
+                }) {
+                    HStack {
+                        if let icon = list.icon {
+                            Image(systemName: icon)
+                                .foregroundColor(list.color)
+                        }
+                        Text(list.title)
+                        Spacer()
+                        if selectedList?.id == list.id {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.blue)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Sélectionner une liste")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Annuler") {
+                        onDismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Structure pour un bouton d'action
 struct ActionButton: View {
     let title: String
     let action: () -> Void
     
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(Color.black)
-                .cornerRadius(12)
+            HStack {
+                Text(title)
+                    .font(.headline)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
         }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+// MARK: - Custom Corner Radius Extension
+extension View {
+    func customCornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCorners(radius: radius, corners: corners))
+    }
+}
+
+struct RoundedCorners: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius, height: radius)
+        )
+        return Path(path.cgPath)
+    }
+}
+
+// MARK: - Structure détaillée d'un élément de liste
+struct ListItemDetail: Identifiable {
+    let id = UUID()
+    let name: String
+    let price: Double?
+    var isCompleted: Bool
+    let quantity: String?
+    let image: String?
+}
+
+// MARK: - Composant pour afficher un ingrédient
+struct IngredientRow: View {
+    @Binding var ingredient: IngredientItem
+    
+    var body: some View {
+        HStack {
+            Text(ingredient.name)
+                .font(.system(size: 15, weight: .medium))
+            
+            Spacer()
+            
+            Text("\(ingredient.quantity) \(ingredient.unit)")
+                .font(.system(size: 15))
+                .foregroundColor(.secondary)
+        }
+        .padding(.vertical, 4)
     }
 }
 

@@ -10,8 +10,9 @@ struct ListItem: Identifiable {
     var price: Double?
     var date: Date
     var color: Color
+    var category: String?
     
-    init(id: String = UUID().uuidString, title: String, icon: String? = nil, numberOfItems: Int = 0, price: Double? = nil, date: Date = Date(), color: Color = .blue) {
+    init(id: String = UUID().uuidString, title: String, icon: String? = nil, numberOfItems: Int = 0, price: Double? = nil, date: Date = Date(), color: Color = .blue, category: String? = nil) {
         self.id = id
         self.title = title
         self.icon = icon
@@ -19,6 +20,24 @@ struct ListItem: Identifiable {
         self.price = price
         self.date = date
         self.color = color
+        self.category = category
+    }
+}
+
+// Énumération pour les catégories de liste
+enum ListCategory: String {
+    case maison = "maison"
+    case enfants = "enfants"
+    case courses = "courses"
+    case soiree = "soiree"
+    
+    var systemIconName: String {
+        switch self {
+        case .maison: return "house"
+        case .enfants: return "person.2"
+        case .courses: return "cart"
+        case .soiree: return "fork.knife"
+        }
     }
 }
 
@@ -40,10 +59,10 @@ let sampleRecommendedItems: [RecommendedItem] = [
 
 // Échantillons de données pour les listes
 let sampleLists: [ListItem] = [
-    ListItem(title: "Courses maison", icon: "house", numberOfItems: 12, price: 45.99, color: .blue),
-    ListItem(title: "Courses enfants", icon: "person.2", numberOfItems: 8, price: 34.50, color: .orange),
-    ListItem(title: "Courses de la semaine", icon: "cart", numberOfItems: 15, price: 62.75, color: .green),
-    ListItem(title: "Soirée pizza", icon: "fork.knife", numberOfItems: 6, price: 25.30, color: .red)
+    ListItem(title: "Courses maison", icon: "house", numberOfItems: 12, price: 45.99, color: .blue, category: ListCategory.maison.rawValue),
+    ListItem(title: "Courses enfants", icon: "person.2", numberOfItems: 8, price: 34.50, color: .orange, category: ListCategory.enfants.rawValue),
+    ListItem(title: "Courses de la semaine", icon: "cart", numberOfItems: 15, price: 62.75, color: .green, category: ListCategory.courses.rawValue),
+    ListItem(title: "Soirée pizza", icon: "fork.knife", numberOfItems: 6, price: 25.30, color: .red, category: ListCategory.soiree.rawValue)
 ]
 
 // Données pour le graphique des catégories
