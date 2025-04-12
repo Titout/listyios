@@ -41,7 +41,9 @@ let sampleRecommendedItems: [RecommendedItem] = [
 // Échantillons de données pour les listes
 let sampleLists: [ListItem] = [
     ListItem(title: "Courses maison", icon: "house", numberOfItems: 12, price: 45.99, color: .blue),
-    ListItem(title: "Courses enfants", icon: "person.2", numberOfItems: 8, price: 34.50, color: .orange)
+    ListItem(title: "Courses enfants", icon: "person.2", numberOfItems: 8, price: 34.50, color: .orange),
+    ListItem(title: "Courses de la semaine", icon: "cart", numberOfItems: 15, price: 62.75, color: .green),
+    ListItem(title: "Soirée pizza", icon: "fork.knife", numberOfItems: 6, price: 25.30, color: .red)
 ]
 
 // Données pour le graphique des catégories

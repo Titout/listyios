@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ListView: View {
     @State private var searchText = ""
-    @State private var lists: [ListItem] = sampleLists
+    @State private var lists: [ListItem] = []
     @State private var selectedList: ListItem? = nil
     @State private var showDetailView = false
     @State private var isLoading = false
@@ -239,35 +239,6 @@ struct LoadingView: View {
         }
     }
 }
-
-// Structure pour les éléments de liste
-struct ListItem: Identifiable {
-    let id: String
-    var title: String
-    var icon: String?
-    var numberOfItems: Int
-    var price: Double?
-    var date: Date?
-    var color: Color
-    
-    init(id: String = UUID().uuidString, title: String, icon: String? = nil, numberOfItems: Int = 0, price: Double? = nil, date: Date? = Date(), color: Color = .blue) {
-        self.id = id
-        self.title = title
-        self.icon = icon
-        self.numberOfItems = numberOfItems
-        self.price = price
-        self.date = date
-        self.color = color
-    }
-}
-
-// Exemples de données pour les listes
-let sampleLists: [ListItem] = [
-    ListItem(title: "Courses maison", icon: "house", numberOfItems: 12, price: 45.99, color: .blue),
-    ListItem(title: "Courses enfants", icon: "person.2", numberOfItems: 8, price: 34.50, color: .orange),
-    ListItem(title: "Courses de la semaine", icon: "cart", numberOfItems: 15, price: 62.75, color: .green),
-    ListItem(title: "Soirée pizza", icon: "fork.knife", numberOfItems: 6, price: 25.30, color: .red)
-]
 
 // MARK: - ListCardFactory - Un composant pour afficher une carte de liste
 struct ListCardFactory: View {
