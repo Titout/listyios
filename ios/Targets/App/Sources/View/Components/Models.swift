@@ -71,4 +71,12 @@ extension Color {
         
         self.init(red: r, green: g, blue: b, opacity: alpha)
     }
+}
+
+// Structure pour les ingrédients
+struct IngredientItem: Identifiable {
+    let id = UUID()
+    let name: String
+    let quantity: String
+    let unit: String
 } 
