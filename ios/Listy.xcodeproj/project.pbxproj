@@ -40,7 +40,6 @@
 		266000D7A23D0433858191AA /* NotificationsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F890856ED7DC9690478DDA7 /* NotificationsSettingsView.swift */; };
 		287254271C153852B8B81C8E /* AdsKitExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69D47FE1D5DF27FF119DEB5 /* AdsKitExamples.swift */; };
 		299373CEFC531A3BEB1AF2CE /* currentPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18AA13C8B4643C3399BAAC9D /* currentPlatform.swift */; };
-		2C3B4A7E2D770684EC0983F4 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7BCA2F138089C481D3EBF83 /* OnboardingView.swift */; };
 		2C8CD7B33A3E0D524764BB40 /* FirebaseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15952A8F430995EC62DCD162 /* FirebaseKit.framework */; };
 		2D7D81373822F25078204D77 /* AIKitExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996B56C323894C974B9912A9 /* AIKitExamplesView.swift */; };
 		2DFB75662A9B0916056522B1 /* WhatsNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12BC13358BA64BBE8A60E7B /* WhatsNewView.swift */; };
@@ -556,7 +555,6 @@
 		D61E0CB7795B7E7EDA52BB13 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		D635425B2812DE4EF45C1CFC /* InAppPurchases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchases.swift; sourceTree = "<group>"; };
 		D69D47FE1D5DF27FF119DEB5 /* AdsKitExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsKitExamples.swift; sourceTree = "<group>"; };
-		D7BCA2F138089C481D3EBF83 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		D9098AA5FB71EAE9FDA6E256 /* requirePremium.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = requirePremium.swift; sourceTree = "<group>"; };
 		DD55F680139EDBBB13966A0F /* SignUpButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpButtons.swift; sourceTree = "<group>"; };
 		E267DEEB755175131A2A51C0 /* TuistBundle+AIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistBundle+AIKit.swift"; sourceTree = "<group>"; };
@@ -1111,7 +1109,6 @@
 		9A0299372C26186A139C4580 /* OneTimeViews */ = {
 			isa = PBXGroup;
 			children = (
-				D7BCA2F138089C481D3EBF83 /* OnboardingView.swift */,
 				C12BC13358BA64BBE8A60E7B /* WhatsNewView.swift */,
 			);
 			path = OneTimeViews;
@@ -1908,7 +1905,6 @@
 				5B68A2E49D398E17DE5CB991 /* ListView.swift in Sources */,
 				C1BE45F80C685E15B0A32074 /* ContentView.swift in Sources */,
 				F82DC1FB66D6F26DBD481957 /* OnboardingView.swift in Sources */,
-				2C3B4A7E2D770684EC0983F4 /* OnboardingView.swift in Sources */,
 				2DFB75662A9B0916056522B1 /* WhatsNewView.swift in Sources */,
 				17EFB448ECD1AA493FA3D1B1 /* ActionMenuView.swift in Sources */,
 				ECECD4F362584D93872F2735 /* AppearanceView.swift in Sources */,
@@ -2526,6 +2522,7 @@
 				CODE_SIGN_ENTITLEMENTS = Derived/Entitlements/Listy.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = E7YMWJ3474;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "Derived/InfoPlists/Listy-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -2797,6 +2794,7 @@
 				CODE_SIGN_ENTITLEMENTS = Derived/Entitlements/Listy.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = E7YMWJ3474;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "Derived/InfoPlists/Listy-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;

@@ -24,6 +24,9 @@ func tuistProject() -> Project {
 	// Your app's "internal" version = build number
 	let appBuildNumber = "1"
 
+	// Development Team ID
+	let developmentTeamID = "E7YMWJ3474"
+
 	let destinations: ProjectDescription.Destinations = [
 		.iPhone
 	]
@@ -170,13 +173,11 @@ func tuistProject() -> Project {
 			],
 			dependencies: appDependencies,
 			settings: .settings(base: [
-				"OTHER_LDFLAGS": "-ObjC",
-				"ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": "AccentColor"
-
-					,
-				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"
-
-					, "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+				"OTHER_LDFLAGS": .string("-ObjC"),
+				"ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": .string("AccentColor"),
+				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": .string("YES"),
+				"DEBUG_INFORMATION_FORMAT": .string("dwarf-with-dsym"),
+				"DEVELOPMENT_TEAM": .string(developmentTeamID)
 			])
 		)
 
@@ -200,7 +201,7 @@ func tuistProject() -> Project {
 			],
 			dependencies: [],
 			settings: .settings(base: [
-				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"
+				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": .string("YES")
 			])
 		)
 
@@ -229,7 +230,7 @@ func tuistProject() -> Project {
 				sharedKit,
 			],
 			settings: .settings(base: [
-				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"
+				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": .string("YES")
 			])
 		)
 		let targetDependency = TargetDependency.target(name: targetName)
@@ -268,7 +269,7 @@ func tuistProject() -> Project {
 				TargetDependency.package(product: "RevenueCatUI", type: .runtime),
 			],
 			settings: .settings(base: [
-				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"
+				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": .string("YES")
 			])
 		)
 		let targetDependency = TargetDependency.target(name: targetName)
@@ -301,7 +302,7 @@ func tuistProject() -> Project {
 				TargetDependency.package(product: "PostHog", type: .runtime),
 			],
 			settings: .settings(base: [
-				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"
+				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": .string("YES")
 			])
 		)
 		appDependencies.append(TargetDependency.target(name: targetName))
@@ -332,7 +333,7 @@ func tuistProject() -> Project {
 				analyticsKit,
 			],
 			settings: .settings(base: [
-				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"
+				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": .string("YES")
 			])
 		)
 
@@ -375,7 +376,7 @@ func tuistProject() -> Project {
 				),
 			dependencies: [TargetDependency.package(product: "OneSignalExtension", type: .runtime)],
 			settings: .settings(base: [
-				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"
+				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": .string("YES")
 			])
 		)
 		appEntitlements["aps-environment"] = .string("development")
@@ -406,7 +407,7 @@ func tuistProject() -> Project {
 				analyticsKit,
 			],
 			settings: .settings(base: [
-				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"
+				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": .string("YES")
 			])
 		)
 
@@ -449,7 +450,7 @@ func tuistProject() -> Project {
 				sharedKit,
 			],
 			settings: .settings(base: [
-				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES"
+				"ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": .string("YES")
 			])
 		)
 		appDependencies.append(TargetDependency.target(name: targetName))
