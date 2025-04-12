@@ -23,182 +23,110 @@ struct HomeView: View {
     @State private var selectedListForEdit: ListItem? = nil
     @State private var showRecommendations: Bool = false
     @State private var navigateToListView = false
+    @State private var showNotifications = false
     
     var body: some View {
         NavigationView {
             ZStack {
-                Color(UIColor(red: 0.97, green: 0.97, blue: 0.97, alpha: 1))
+                // Couleur de fond
+                Color(UIColor.systemGroupedBackground)
                     .edgesIgnoringSafeArea(.all)
                 
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
+                    VStack(spacing: 24) {
+                        // En-tête avec message de bienvenue
                         welcomeSection()
-                        weekSummaryCard()
-                        categoryBreakdownSection()
                         
-                        if showRecommendations {
-                            recommendationsSection()
-                        }
+                        // Résumé hebdomadaire
+                        weeklySummarySection()
                         
+                        // Section des recommandations
+                        recommendationsSection()
+                        
+                        // Section des listes
                         yourListsSection()
-                        Spacer(minLength: 80)
                     }
                     .padding(.horizontal, 24)
-                    .padding(.top, 28)
-                }
-                
-                NavigationLink(destination: SimpleListView(), isActive: $navigateToListView) {
-                    EmptyView()
+                    .padding(.top, 24)
                 }
             }
-            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Text("Bienvenue \(viewModel.userName)")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.black)
-                        .padding(.top, 12)
+                    Text("Bonjour \(viewModel.userName) 👋")
+                        .font(.system(size: 18, weight: .semibold))
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        viewModel.showNotifications = true
+                        showNotifications.toggle()
                     } label: {
                         Image(systemName: "bell")
                             .font(.system(size: 20))
-                            .foregroundColor(.black)
-                            .padding(.top, 12)
+                            .foregroundColor(.primary)
                     }
                 }
             }
             .sheet(isPresented: $showDetailView) {
                 if let list = selectedList {
                     DetailListView(list: list)
-                        .presentationDetents([.large])
-                        .presentationDragIndicator(.visible)
                 }
             }
-            .sheet(isPresented: $viewModel.showNotifications) {
+            .sheet(isPresented: $showNotifications) {
                 NotificationsView()
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.visible)
-            }
-            .task {
-                await viewModel.loadInitialData()
             }
         }
-        .navigationViewStyle(.stack)
-    }
-    
-    // MARK: - Calcul du budget total
-    private var totalBudget: Double {
-        viewModel.lists.compactMap { $0.price }.reduce(0, +)
-    }
-    
-    private var totalItems: Int {
-        viewModel.lists.count * 5
     }
     
     // MARK: - Sections
-    @ViewBuilder
     private func welcomeSection() -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Qu'est-ce qu'on achète aujourd'hui ?")
-                .font(.system(size: 16))
-                .foregroundColor(Color(UIColor.systemGray))
-                .padding(.top, 12)
+            Text("Bienvenue \(viewModel.userName)")
+                .font(.system(size: 28, weight: .heavy))
+                .foregroundColor(Color(UIColor(red: 0.11, green: 0.11, blue: 0.13, alpha: 1)))
         }
-        .padding(.bottom, 8)
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.white)
+        .cornerRadius(12)
     }
     
-    @ViewBuilder
-    private func weekSummaryCard() -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack {
+    private func weeklySummarySection() -> some View {
+        VStack(alignment: .leading, spacing: 24) {
+            Text("Cette semaine")
+                .font(.system(size: 28, weight: .heavy))
+                .foregroundColor(Color(UIColor(red: 0.11, green: 0.11, blue: 0.13, alpha: 1)))
+            
+            HStack(spacing: 16) {
+                // Budget total
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Cette semaine")
-                        .font(.system(size: 20, weight: .semibold))
+                    Text("Budget total")
+                        .font(.system(size: 14))
+                        .foregroundColor(.secondary)
                     
-                    Text("Budget: \(String(format: "%.2f", totalBudget)) €")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.blue)
+                    Text("\(String(format: "%.2f", totalBudget)) €")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.primary)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+                .background(Color.white)
+                .cornerRadius(12)
                 
-                Spacer()
-                
-                Image(systemName: "cart")
-                    .font(.system(size: 24))
-                    .foregroundColor(.blue)
-                    .frame(width: 48, height: 48)
-                    .background(Color.blue.opacity(0.15))
-                    .cornerRadius(12)
-            }
-            
-            Divider()
-                .padding(.vertical, 4)
-            
-            HStack(spacing: 32) {
-                VStack(alignment: .leading, spacing: 4) {
+                // Nombre d'articles
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Articles")
+                        .font(.system(size: 14))
+                        .foregroundColor(.secondary)
+                    
                     Text("\(totalItems)")
-                        .font(.system(size: 16, weight: .bold))
-                    Text("Items")
-                        .font(.system(size: 12))
-                        .foregroundColor(.secondary)
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundColor(.primary)
                 }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("\(viewModel.lists.count)")
-                        .font(.system(size: 16, weight: .bold))
-                    Text("Listes")
-                        .font(.system(size: 12))
-                        .foregroundColor(.secondary)
-                }
-                
-                Spacer()
-            }
-            
-            Button {
-                // Basculer vers l'onglet ListView (index 1)
-                tabSelection.wrappedValue = 1
-            } label: {
-                Text("Voir mes listes")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-                    .background(Color.black)
-                    .cornerRadius(12)
-            }
-            .padding(.top, 8)
-        }
-        .padding(16)
-        .background(Color.white)
-        .cornerRadius(12)
-    }
-    
-    @ViewBuilder
-    private func categoryBreakdownSection() -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Top catégories")
-                .font(.system(size: 22, weight: .bold))
-                .foregroundColor(Color(hex: "000000", alpha: 0.9))
-            
-            VStack(spacing: 12) {
-                ForEach(weeklyCategoryExpenses, id: \.0) { category, value, color in
-                    HStack {
-                        HStack(spacing: 4) {
-                            Circle().fill(color).frame(width: 12, height: 12)
-                            Text(category)
-                                .font(.system(size: 14))
-                                .foregroundColor(Color(hex: "000000", alpha: 0.7))
-                        }
-                        Spacer()
-                        Text("\(String(format: "%.2f", value))€")
-                            .font(.system(size: 14))
-                            .foregroundColor(Color(hex: "000000", alpha: 0.7))
-                    }
-                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+                .background(Color.white)
+                .cornerRadius(12)
             }
         }
         .padding(16)
@@ -206,7 +134,6 @@ struct HomeView: View {
         .cornerRadius(12)
     }
     
-    @ViewBuilder
     private func recommendationsSection() -> some View {
         VStack(alignment: .leading, spacing: 0) {
             // En-tête de la section
@@ -245,6 +172,7 @@ struct HomeView: View {
                 // Bouton "En voir plus"
                 Button {
                     // Action pour voir plus
+                    showRecommendations = true
                 } label: {
                     Text("En voir plus")
                         .font(.system(size: 14, weight: .semibold))
@@ -263,7 +191,6 @@ struct HomeView: View {
         .cornerRadius(12)
     }
     
-    @ViewBuilder
     private func yourListsSection() -> some View {
         VStack(alignment: .leading, spacing: 24) {
             // En-tête de la section
@@ -292,7 +219,6 @@ struct HomeView: View {
     }
     
     // Carte pour chaque liste
-    @ViewBuilder
     private func listCard(list: ListItem) -> some View {
         ListCardFactory(
             list: list,
@@ -307,5 +233,14 @@ struct HomeView: View {
                 }
             }
         )
+    }
+    
+    // MARK: - Computed Properties
+    private var totalBudget: Double {
+        viewModel.lists.compactMap { $0.price }.reduce(0, +)
+    }
+    
+    private var totalItems: Int {
+        viewModel.lists.reduce(0) { $0 + $1.numberOfItems }
     }
 } 

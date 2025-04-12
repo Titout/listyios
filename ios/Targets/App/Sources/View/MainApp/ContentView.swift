@@ -14,6 +14,7 @@ import SwiftUI
 
 struct ContentView: View {
 	@State private var selectedTab = 0
+	@State private var showActionMenu = false // État pour contrôler la modale
 	
 	init() { }
 	
@@ -28,20 +29,27 @@ struct ContentView: View {
 				.environment(\.tabSelection, $selectedTab)
 
 			// Vue des listes
-			
+			ListsView()
 				.tabItem {
 					Label("Listes", systemImage: "list.bullet")
 				}
 				.tag(1)
 				.environment(\.tabSelection, $selectedTab)
 			
-			// Vue d'ajout de liste
-			Text("Ajouter")
+			// Vue d'ajout de liste (remplacée par un bouton qui ouvre la modale)
+			Color.clear // Vue transparente car on ne navigue pas
 				.tabItem {
 					Label("Ajouter", systemImage: "plus.circle.fill")
 				}
 				.tag(2)
-				.environment(\.tabSelection, $selectedTab)
+				.onAppear {
+					// Déclencher l'ouverture de la modale quand cet onglet est sélectionné
+					if selectedTab == 2 {
+						showActionMenu = true
+						// Revenir à l'onglet précédent
+						selectedTab = max(0, selectedTab - 1)
+					}
+				}
 			
 			// Pre-made Settings View for easy native-looking settings screen.
 			SettingsView()
@@ -60,6 +68,26 @@ struct ContentView: View {
 				.tag(4)
 				.environment(\.tabSelection, $selectedTab)
 			#endif
+		}
+		.sheet(isPresented: $showActionMenu) {
+			ActionMenuView(
+				isPresented: $showActionMenu,
+				onNewList: {
+					// Implémentez vos callbacks ici
+				},
+				onAddItem: {
+					// Implémentez vos callbacks ici
+				},
+				onInstagramImport: {
+					// Implémentez vos callbacks ici
+				},
+				onScanList: {
+					// Implémentez vos callbacks ici
+				},
+				onShowCardShowcase: {
+					// Implémentez vos callbacks ici
+				}
+			)
 		}
 	}
 }

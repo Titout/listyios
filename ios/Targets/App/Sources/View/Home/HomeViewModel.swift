@@ -4,8 +4,8 @@ import SwiftUI
 @MainActor
 class HomeViewModel: ObservableObject {
     // MARK: - Published Properties
-    @Published var lists: [ListItem] = sampleLists
-    @Published var recommendedItems: [RecommendedItem] = sampleRecommendedItems
+    @Published var lists: [ListItem] = []
+    @Published var recommendedItems: [RecommendedItem] = []
     @Published var showNotifications: Bool = false
     @Published var userName: String = "Antoine"
     
@@ -20,7 +20,7 @@ class HomeViewModel: ObservableObject {
     // MARK: - Public Methods
     func loadInitialData() async {
         // Pour l'instant, nous utilisons des données statiques
-        // À remplacer par des appels API réels plus tard
+        lists = sampleLists
         await loadRecommendations()
         await checkNotifications()
     }

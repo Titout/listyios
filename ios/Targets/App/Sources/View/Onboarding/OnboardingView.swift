@@ -18,19 +18,21 @@ import SwiftUI
 private let onboardingPages: [AnyView] = [
 	AnyView(
 		HeroView(
-			sfSymbolName: "scribble.variable",
-			title: "Onboarding Page 1",
-			subtitle: "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit, sed do.",
+			image: Image(systemName: "list.clipboard.fill"),
+			title: "Bienvenue sur Listy",
+			subtitle: "Créez et gérez vos listes de courses\nde manière intelligente",
 			bounceOnAppear: true
 		)),
 	AnyView(
 		HeroView(
-			sfSymbolName: "timeline.selection", title: "Onboarding Page 2",
-			subtitle: "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit, sed do.")),
+			image: Image(systemName: "camera.viewfinder"),
+			title: "Scan Intelligent",
+			subtitle: "Scannez vos listes manuscrites\net vos tickets de caisse")),
 	AnyView(
 		HeroView(
-			sfSymbolName: "person.3.fill", title: "Onboarding Page 3",
-			subtitle: "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit, sed do.")),
+			image: Image(systemName: "person.2.fill"),
+			title: "Collaboration en temps réel",
+			subtitle: "Partagez et modifiez vos listes\navec vos proches"))
 ]
 
 /// Is attached to the root ContentView in App.swift, and shown when the app version saved in UserDefaults
@@ -58,9 +60,7 @@ struct ShowOnboardingViewOnFirstLaunchEverModifier: ViewModifier {
 		}
 		// Do not move this into init(), as it may be called multiple times, which will result in the OnboardingView never being shown!
 		.onAppear {
-			// Convenience to see the OnboardingView in the preview every time
-			// Otherwise, only show onboarding on the first app launch ever
-			if isPreview {
+			if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
 				self.showOnboarding = true
 			} else {
 				self.showOnboarding = lastAppVersionAppWasOpenedAt == "NONE"
@@ -80,14 +80,14 @@ struct ShowOnboardingViewOnFirstLaunchEverModifier: ViewModifier {
 		var body: some View {
 			VStack {
 				TabView(selection: $pageIndex) {
-					ForEach(0..<3) { index in  // <- Add the count here when adding or removing views in onboardingPages above
+					ForEach(0..<onboardingPages.count, id: \.self) { index in
 						onboardingPages[index]
 							.tag(index)
 					}
 				}
 				.tabViewStyle(.page(indexDisplayMode: .never))  // don't show the page dots
 
-				Button(pageIndex == onboardingPages.count - 1 ? "Finish Onboarding" : "Next") {
+				Button(pageIndex == onboardingPages.count - 1 ? "Commencer" : "Suivant") {
 					withAnimation {
 						if pageIndex == onboardingPages.count - 1 {
 							onCompletion()
@@ -96,18 +96,53 @@ struct ShowOnboardingViewOnFirstLaunchEverModifier: ViewModifier {
 						}
 					}
 				}
-				.buttonStyle(.cta())
+				.buttonStyle(.borderedProminent)
 				.padding(.horizontal)
 				.padding(.bottom)
-				.captureTaps("continue_btn", fromView: "OnboardingView", relevancy: .low)
 			}
-			.accentBackground(strong: true)
-			.captureViewActivity(as: "OnboardingView")
+			.background(Color(uiColor: .systemBackground))
+		}
+	}
+}
+
+struct HeroView: View {
+	let image: Image
+	let title: String
+	let subtitle: String
+	var bounceOnAppear: Bool = false
+	
+	@State private var hasAppeared = false
+	
+	var body: some View {
+		VStack(spacing: 20) {
+			image
+				.resizable()
+				.aspectRatio(contentMode: .fit)
+				.frame(width: 120, height: 120)
+				.foregroundColor(.accentColor)
+				.scaleEffect(hasAppeared && bounceOnAppear ? 1.1 : 1.0)
+				.animation(.spring(response: 0.5, dampingFraction: 0.5).repeatForever(), value: hasAppeared)
+			
+			Text(title)
+				.font(.title)
+				.bold()
+				.multilineTextAlignment(.center)
+			
+			Text(subtitle)
+				.font(.body)
+				.foregroundColor(.secondary)
+				.multilineTextAlignment(.center)
+		}
+		.padding(.horizontal, 40)
+		.onAppear {
+			if bounceOnAppear {
+				hasAppeared = true
+			}
 		}
 	}
 }
 
 #Preview {
-	Text("Hello")
+	Text("Preview Content")
 		.modifier(ShowOnboardingViewOnFirstLaunchEverModifier())
 }
