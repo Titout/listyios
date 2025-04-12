@@ -1,5 +1,14 @@
 import SwiftUI
 import Combine
+import Foundation
+
+// Structure pour les ingrédients (local definition)
+struct IngredientItem: Identifiable {
+    let id = UUID()
+    let name: String
+    let quantity: String
+    let unit: String
+}
 
 // Vue du menu d'actions conforme à la maquette Figma
 struct ActionMenuView: View {

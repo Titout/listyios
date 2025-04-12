@@ -101,6 +101,22 @@ struct ListView: View {
                 }
             }
         }
+        .onAppear {
+            // Charger les listes au démarrage
+            loadInitialLists()
+        }
+    }
+    
+    // Charger les listes initiales
+    private func loadInitialLists() {
+        // Pour le prototype, nous utilisons des données statiques
+        // Ici, vous pourriez charger les données depuis un service ou une API
+        lists = [
+            ListItem(title: "Courses maison", icon: "house", numberOfItems: 12, price: 45.99, color: .blue),
+            ListItem(title: "Courses enfants", icon: "person.2", numberOfItems: 8, price: 34.50, color: .orange),
+            ListItem(title: "Courses de la semaine", icon: "cart", numberOfItems: 15, price: 62.75, color: .green),
+            ListItem(title: "Soirée pizza", icon: "fork.knife", numberOfItems: 6, price: 25.30, color: .red)
+        ]
     }
     
     // Mettre à jour une liste dans l'array des listes
@@ -214,7 +230,7 @@ struct ListView: View {
     
     // Tri des listes par date
     private func sortListsByDate() {
-        lists.sort { ($0.date ?? Date()) > ($1.date ?? Date()) }
+        lists.sort { ($0.date > $1.date) }
     }
     
     // Tri des listes par ordre alphabétique
@@ -236,91 +252,6 @@ struct LoadingView: View {
                 .padding(24)
                 .background(Color.black.opacity(0.6))
                 .cornerRadius(12)
-        }
-    }
-}
-
-// MARK: - ListCardFactory - Un composant pour afficher une carte de liste
-struct ListCardFactory: View {
-    let list: ListItem
-    let onTap: () -> Void
-    let onDelete: (ListItem) -> Void
-    
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 16) {
-                // Icône de la liste
-                if let icon = list.icon {
-                    Image(systemName: icon)
-                        .font(.system(size: 24))
-                        .foregroundColor(list.color)
-                        .frame(width: 48, height: 48)
-                        .background(list.color.opacity(0.15))
-                        .cornerRadius(12)
-                }
-                
-                // Informations de la liste
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(list.title)
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(.primary)
-                    
-                    HStack(spacing: 12) {
-                        Text("\(list.numberOfItems) items")
-                            .font(.system(size: 14))
-                            .foregroundColor(.secondary)
-                        
-                        if let price = list.price {
-                            Text("\(String(format: "%.2f", price)) €")
-                                .font(.system(size: 14))
-                                .foregroundColor(.blue)
-                        }
-                    }
-                }
-                
-                Spacer()
-                
-                // Flèche de navigation
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(Color(UIColor.systemGray3))
-            }
-            .padding(12)
-            .background(Color.white)
-            .cornerRadius(12)
-            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
-        }
-        .buttonStyle(PlainButtonStyle())
-        .contextMenu {
-            Button(role: .destructive) {
-                onDelete(list)
-            } label: {
-                Label("Supprimer", systemImage: "trash")
-            }
-        }
-    }
-}
-
-// Vue simple pour la vue détaillée d'une liste
-struct DetailListView: View {
-    let list: ListItem
-    
-    var body: some View {
-        VStack {
-            Text(list.title)
-                .font(.title)
-                .padding()
-            
-            Text("\(list.numberOfItems) items")
-                .foregroundColor(.secondary)
-            
-            if let price = list.price {
-                Text("Total: \(String(format: "%.2f", price)) €")
-                    .foregroundColor(.blue)
-                    .padding()
-            }
-            
-            Spacer()
         }
     }
 }

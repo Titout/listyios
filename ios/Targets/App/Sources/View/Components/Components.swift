@@ -198,25 +198,33 @@ struct ListEditMenu: View {
             }) {
                 HStack {
                     Image(systemName: "trash")
-                    Text("Supprimer la liste")
+                        .foregroundColor(.red)
+                        .frame(width: 24, height: 24)
+                    
+                    Text("Supprimer cette liste")
+                        .foregroundColor(.red)
                 }
-                .foregroundColor(.red)
                 .padding()
                 .frame(maxWidth: .infinity)
                 .background(Color.red.opacity(0.1))
-                .cornerRadius(10)
+                .cornerRadius(8)
+            }
+            
+            Button(action: {
+                // Fermer le menu sans action
+            }) {
+                Text("Annuler")
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(8)
             }
             
             Spacer()
         }
         .padding()
+        .frame(height: 300)
+        .background(Color.white)
+        .cornerRadius(16)
     }
-}
-
-// Vue simple pour ListView (référencée dans HomeView)
-struct SimpleListView: View {
-    var body: some View {
-        Text("Vue de listes")
-            .font(.title)
-    }
-}
+} 
