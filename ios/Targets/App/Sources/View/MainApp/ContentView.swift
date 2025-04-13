@@ -12,117 +12,145 @@ import SharedKit
 import SwiftUI
 
 struct ContentView: View {
-	@EnvironmentObject var db: DB
-	@EnvironmentObject var iap: InAppPurchases
-	
-	@State private var selectedTab = 0
-	@State private var showActionMenu = false
-	@State private var showDeveloperView = false // Nouvel état pour la vue développeur
-	
-	init() { }
-	
-	var body: some View {
-		ZStack {
-			TabView(selection: $selectedTab) {
-				// Vue d'accueil principale
-				HomeView()
-					.tabItem {
-						Label("Accueil", systemImage: "house")
-					}
-					.tag(0)
-					.environment(\.tabSelection, $selectedTab)
+    @EnvironmentObject var db: DB
+    @EnvironmentObject var iap: InAppPurchases
+    
+    @State private var selectedTab = 0
+    @State private var showActionMenu = false
+    @State private var showDeveloperView = false // Nouvel état pour la vue développeur
+    
+    // On ne définit plus init() s'il est vide, la version par défaut suffit
+    
+    var body: some View {
+        // Utilisation de ZStack pour superposer le bouton de débogage sur le TabView
+        ZStack {
+            TabView(selection: $selectedTab) {
+                // Vue d'accueil principale
+                HomeView()
+                    .tabItem {
+                        Label("Accueil", systemImage: "house")
+                    }
+                    .tag(0)
+                    .environment(\.tabSelection, $selectedTab) // Passe la sélection pour la navigation interne si nécessaire
 
-				// Vue des listes
-				ListView()
-					.tabItem {
-						Label("Listes", systemImage: "list.bullet")
-					}
-					.tag(1)
-					.environment(\.tabSelection, $selectedTab)
-				
-				// Vue d'ajout de liste (remplacée par un bouton qui ouvre la modale)
-				Color.clear
-					.tabItem {
-						Label("Ajouter", systemImage: "plus.circle.fill")
-					}
-					.tag(2)
-					.onAppear {
-						if selectedTab == 2 {
-							showActionMenu = true
-							selectedTab = max(0, selectedTab - 1)
-						}
-					}
-				
-				// Vue des statistiques
-				StatsView()
-					.tabItem {
-						Label("Statistiques", systemImage: "chart.bar.fill")
-					}
-					.tag(3)
-					.environment(\.tabSelection, $selectedTab)
-				
-				// Vue des réglages
-				SettingsView()
-					.tabItem {
-						Label("Réglages", systemImage: "gear")
-					}
-					.tag(4)
-					.environment(\.tabSelection, $selectedTab)
-			}
-			
-			// Bouton flottant pour accéder à la vue développeur en mode DEBUG
-			#if DEBUG
-			VStack {
-				HStack {
-					Spacer()
-					Button(action: {
-						showDeveloperView = true
-					}) {
-						Image(systemName: "hammer.circle.fill")
-							.font(.system(size: 44))
-							.foregroundColor(.blue)
-							.padding()
-							.background(Color.white.opacity(0.8))
-							.clipShape(Circle())
-							.shadow(radius: 3)
-					}
-					.padding(.trailing, 16)
-				}
-				.padding(.top, 50) // Ajout d'un padding en haut pour éviter le notch/status bar
-				Spacer()
-			}
-			#endif
-		}
-		.sheet(isPresented: $showActionMenu) {
-			ActionMenuView(
-				isPresented: $showActionMenu,
-				onNewList: {
-					print("Nouvelle liste créée")
-				},
-				onAddItem: {
-					print("Nouvel item ajouté")
-				},
-				onInstagramImport: {
-					print("Import Instagram effectué")
-				},
-				onScanList: {
-					print("Scan de liste effectué")
-				},
-				onShowCardShowcase: {
-					print("Showcase de cartes affiché")
-				}
-			)
-		}
-		#if DEBUG
-		.sheet(isPresented: $showDeveloperView) {
-			DeveloperSettingsView()
-		}
-		#endif
-	}
+                // Vue des listes
+                ListView()
+                    .tabItem {
+                        Label("Listes", systemImage: "list.bullet")
+                    }
+                    .tag(1)
+                    .environment(\.tabSelection, $selectedTab)
+                
+                // Tab "Ajouter" qui déclenche la modale au lieu d'afficher une vue
+                Color.clear // Contenu vide car ce tab sert de déclencheur
+                    .tabItem {
+                        Label("Ajouter", systemImage: "plus.circle.fill")
+                    }
+                    .tag(2)
+                    // Logique pour afficher la modale quand ce tab est sélectionné
+                    .onAppear {
+                        if selectedTab == 2 {
+                            showActionMenu = true
+                            // Optionnel: Revenir au tab précédent pour ne pas rester sur un tab vide
+                            selectedTab = 0 // ou 1, selon la préférence
+                        }
+                    }
+                
+                // Vue des statistiques
+                StatsView()
+                    .tabItem {
+                        Label("Statistiques", systemImage: "chart.bar.fill")
+                    }
+                    .tag(3)
+                    .environment(\.tabSelection, $selectedTab)
+                
+                // Vue des réglages
+                SettingsView()
+                    .tabItem {
+                        Label("Réglages", systemImage: "gear")
+                    }
+                    .tag(4)
+                    .environment(\.tabSelection, $selectedTab)
+            } // Fin TabView
+            
+            // Bouton flottant pour accéder à la vue développeur (conditionné à DEBUG)
+            #if DEBUG
+            VStack { // Aligne le bouton en haut à droite
+                HStack {
+                    Spacer() // Pousse vers la droite
+                    Button(action: {
+                        showDeveloperView = true
+                    }) {
+                        Image(systemName: "hammer.circle.fill")
+                            .font(.system(size: 44)) // Taille de l'icône
+                            .foregroundColor(.blue)   // Couleur de l'icône
+                            .padding()                // Espace autour de l'icône
+                            .background(Color.white.opacity(0.8)) // Fond semi-transparent
+                            .clipShape(Circle())      // Forme circulaire
+                            .shadow(radius: 3)        // Ombre légère
+                    }
+                    .padding(.trailing, 16) // Marge à droite
+                }
+                .padding(.top, 50) // Marge en haut pour éviter la barre de statut/notch
+                Spacer() // Pousse le HStack vers le haut
+            }
+            #endif
+            
+        } // Fin ZStack
+        // Modale pour le menu d'actions
+        .sheet(isPresented: $showActionMenu) {
+            ActionMenuView(
+                isPresented: $showActionMenu,
+                // Assurez-vous que les actions passées ici font ce que vous attendez
+                onNewList: {
+                    print("Action demandée: Nouvelle liste")
+                    // Ajoutez ici la logique pour créer une nouvelle liste
+                },
+                onAddItem: {
+                    print("Action demandée: Ajouter un item")
+                    // Ajoutez ici la logique pour ajouter un item
+                },
+                onInstagramImport: {
+                    print("Action demandée: Import Instagram")
+                    // Ajoutez ici la logique pour l'import Instagram
+                },
+                onScanList: {
+                    print("Action demandée: Scanner une liste")
+                    // Ajoutez ici la logique pour scanner une liste
+                },
+                onShowCardShowcase: { // Cette action n'est pas dans les boutons actuels d'ActionMenuView
+                    print("Action demandée: Afficher showcase cartes")
+                }
+            )
+            // ---> MODIFICATION APPLIQUÉE ICI <---
+            .presentationDetents([.medium])
+            // Vous pouvez essayer d'autres options si .medium ne convient pas:
+            // .presentationDetents([.height(380)]) // Hauteur fixe
+            // .presentationDetents([.fraction(0.45)]) // Fraction de l'écran
+        }
+        
+        // Modale pour les paramètres développeur (conditionnée à DEBUG)
+        #if DEBUG
+        .sheet(isPresented: $showDeveloperView) {
+            DeveloperSettingsView()
+                // Vous pourriez aussi vouloir contrôler la taille de cette modale
+                // .presentationDetents([.large]) // Par exemple
+        }
+        #endif
+        
+    } // Fin body
 }
 
+// --- Preview Provider ---
 #Preview {
-	ContentView()
-		.environmentObject(DB())
-		.environmentObject(InAppPurchases())
+    // Création d'instances pour l'aperçu
+    let db = DB()
+    let iap = InAppPurchases()
+    
+    // Simuler un état initial si nécessaire pour l'aperçu
+    // Exemple: db.loadInitialData()
+    
+    return ContentView()
+        .environmentObject(db) // Fournit l'objet DB à l'environnement
+        .environmentObject(iap) // Fournit l'objet InAppPurchases
 }
