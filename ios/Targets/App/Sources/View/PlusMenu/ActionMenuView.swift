@@ -887,16 +887,6 @@ struct RoundedCorners: Shape {
     }
 }
 
-// MARK: - Structure détaillée d'un élément de liste
-struct ListItemDetail: Identifiable {
-    let id = UUID()
-    let name: String
-    let price: Double?
-    var isCompleted: Bool
-    let quantity: String?
-    let image: String?
-}
-
 // MARK: - Composant pour afficher un ingrédient
 struct IngredientRow: View {
     @Binding var ingredient: IngredientItem

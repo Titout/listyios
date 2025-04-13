@@ -1,4 +1,5 @@
 import SwiftUI
+import SharedKit
 
 struct ListView: View {
     @State private var searchText = ""
