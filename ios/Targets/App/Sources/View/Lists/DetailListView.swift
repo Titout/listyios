@@ -1,7 +1,6 @@
 import SwiftUI
 import Foundation
 import SharedKit // Pour accéder à ListItemDetail
-// Pour accéder au composant ListItemRow
 import UIKit // Pour UIColor
 
 // ViewModel pour centraliser la logique de liste et le calcul du budget
@@ -121,8 +120,13 @@ struct DetailListView: View {
                     } else {
                         ForEach(viewModel.uncheckedItems) { item in
                             ListItemRow(
-                                item: item,
+                                title: item.name,
+                                quantity: item.quantity ?? "",
+                                price: item.price != nil ? String(format: "%.2f €", item.price!) : "",
+                                image: item.image,
+                                isPurchased: item.isCompleted,
                                 isInDetailView: true,
+                                showShadow: false,
                                 onAddButtonTap: {
                                     withAnimation {
                                         viewModel.itemBeingToggled = item.id
@@ -146,8 +150,13 @@ struct DetailListView: View {
                     Section(header: Text("Achetés")) {
                         ForEach(viewModel.checkedItems) { item in
                             ListItemRow(
-                                item: item,
+                                title: item.name,
+                                quantity: item.quantity ?? "",
+                                price: item.price != nil ? String(format: "%.2f €", item.price!) : "",
+                                image: item.image,
+                                isPurchased: item.isCompleted,
                                 isInDetailView: true,
+                                showShadow: false,
                                 onAddButtonTap: {
                                     withAnimation {
                                         viewModel.itemBeingToggled = item.id

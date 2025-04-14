@@ -46,6 +46,12 @@ struct ActionMenuView: View {
     @State private var selectedList: ListItem? = nil
     @State private var showListPicker = false
     
+    // États pour présenter les différentes vues modales
+    @State private var showAddItemView = false
+    @State private var showAddListView = false
+    @State private var showInstagramImportView = false
+    @State private var showScanListView = false
+    
     // Callbacks externes
     var onNewList: () -> Void
     var onAddItem: () -> Void
@@ -88,28 +94,28 @@ struct ActionMenuView: View {
                             ActionButton(
                                 title: "Nouvelle liste",
                                 action: {
-                                    activeView = .createList
+                                    showAddListView = true
                                 }
                             )
                             
                             ActionButton(
                                 title: "Importer une recette de Instagram",
                                 action: {
-                                    activeView = .instagram
+                                    showInstagramImportView = true
                                 }
                             )
                             
                             ActionButton(
                                 title: "Scanner une liste",
                                 action: {
-                                    activeView = .scanList
+                                    showScanListView = true
                                 }
                             )
                             
                             ActionButton(
                                 title: "Ajouter un produit à acheter",
                                 action: {
-                                    activeView = .addItem
+                                    showAddItemView = true
                                 }
                             )
                         }
@@ -288,6 +294,27 @@ struct ActionMenuView: View {
                 )
             }
             .edgesIgnoringSafeArea(.bottom)
+        }
+        // Présentation des vues modales
+        .sheet(isPresented: $showAddItemView) {
+            AddItemView(onDismiss: {
+                showAddItemView = false
+            }, onAddItem: { item in
+                onAddItem()
+                isPresented = false
+            })
+        }
+        .sheet(isPresented: $showAddListView) {
+            AddListView(onAddList: { list in
+                onNewList()
+                isPresented = false
+            })
+        }
+        .sheet(isPresented: $showInstagramImportView) {
+            InstagramImportView()
+        }
+        .sheet(isPresented: $showScanListView) {
+            ScanListView()
         }
         .onAppear {
             // Réinitialiser à la vue principale à chaque ouverture
